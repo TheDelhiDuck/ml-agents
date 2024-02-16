@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
+
 namespace Unity.MLAgents.Sensors
 {
     /// <summary>
@@ -12,12 +13,12 @@ namespace Unity.MLAgents.Sensors
     public enum RayPerceptionCastType
     {
         /// <summary>
-        /// Cast in 2 dimensions, using Physics2D.CircleCast or Physics2D.RayCast.
+        /// Cast in 2 dimensions, using Physics/PhysicsScene2D.CircleCast or Physics/PhysicsScene2D.RayCast, or
         /// </summary>
         Cast2D,
 
         /// <summary>
-        /// Cast in 3 dimensions, using Physics.SphereCast or Physics.RayCast.
+        /// Cast in 3 dimensions, using Physics/PhysicsScene.SphereCast or Physics/PhysicsScene.RayCast.
         /// </summary>
         Cast3D,
     }
@@ -463,11 +464,19 @@ namespace Unity.MLAgents.Sensors
 
                 if (scaledCastRadius > 0f)
                 {
+#if MLA_UNITY_USE_PHYSICS_SCENE
                     spherecastCommands[i] = new SpherecastCommand(input.Transform.gameObject.scene.GetPhysicsScene(), startPositionWorld, scaledCastRadius, rayDirectionNormalized, queryParameters, scaledRayLength);
+#else
+                    spherecastCommands[i] = new SpherecastCommand(startPositionWorld, scaledCastRadius, rayDirectionNormalized, queryParameters, scaledRayLength);
+#endif
                 }
                 else
                 {
+#if MLA_UNITY_USE_PHYSICS_SCENE
                     raycastCommands[i] = new RaycastCommand(input.Transform.gameObject.scene.GetPhysicsScene(), startPositionWorld, rayDirectionNormalized, queryParameters, scaledRayLength);
+#else
+                    raycastCommands[i] = new RaycastCommand(startPositionWorld, rayDirectionNormalized, queryParameters, scaledRayLength);
+#endif
                 }
 
                 batchedRaycastOutputs[i] = new RayPerceptionOutput.RayOutput
@@ -588,13 +597,22 @@ namespace Unity.MLAgents.Sensors
                 RaycastHit rayHit;
                 if (scaledCastRadius > 0f)
                 {
+#if MLA_UNITY_USE_PHYSICS_SCENE
+                    castHit = input.Transform.gameObject.scene.GetPhysicsScene().SphereCast(startPositionWorld, scaledCastRadius,
+                        rayDirection, out rayHit, scaledRayLength, input.LayerMask);
+#else
                     castHit = Physics.SphereCast(startPositionWorld, scaledCastRadius, rayDirection, out rayHit,
-                        scaledRayLength, input.LayerMask);
+                                                 scaledRayLength, input.LayerMask);
+#endif
                 }
                 else
                 {
-                    castHit = input.Transform.gameObject.scene.GetPhysicsScene().Raycast(startPositionWorld, rayDirection, out rayHit,
-                        scaledRayLength, input.LayerMask);
+#if MLA_UNITY_USE_PHYSICS_SCENE
+                    castHit = input.Transform.gameObject.scene.GetPhysicsScene().Raycast(startPositionWorld, rayDirection,
+                        out rayHit, scaledRayLength, input.LayerMask);
+#else
+                    castHit = Physics.Raycast(startPositionWorld, rayDirection, out rayHit, scaledRayLength, input.LayerMask);
+#endif
                 }
 
                 // If scaledRayLength is 0, we still could have a hit with sphere casts (maybe?).
@@ -609,13 +627,21 @@ namespace Unity.MLAgents.Sensors
                 RaycastHit2D rayHit;
                 if (scaledCastRadius > 0f)
                 {
-
-                    rayHit = input.Transform.gameObject.scene.GetPhysicsScene2D().CircleCast(startPositionWorld, scaledCastRadius, rayDirection,
-                        scaledRayLength, input.LayerMask);
+#if MLA_UNITY_USE_PHYSICS_SCENE
+                    rayHit = input.Transform.gameObject.scene.GetPhysicsScene2D().CircleCast(startPositionWorld, scaledCastRadius,
+                        rayDirection, scaledRayLength, input.LayerMask);
+#else
+                    rayHit = Physics2D.CircleCast(startPositionWorld, scaledCastRadius, rayDirection, scaledRayLength, input.LayerMask);
+#endif
                 }
                 else
                 {
-                    rayHit = input.Transform.gameObject.scene.GetPhysicsScene2D().Raycast(startPositionWorld, rayDirection, scaledRayLength, input.LayerMask);
+#if MLA_UNITY_USE_PHYSICS_SCENE
+                    rayHit = input.Transform.gameObject.scene.GetPhysicsScene2D().Raycast(startPositionWorld, rayDirection,
+                        scaledRayLength, input.LayerMask);
+#else
+                    rayHit = Physics2D.Raycast(startPositionWorld, rayDirection, scaledRayLength, input.LayerMask);
+#endif
                 }
 
                 castHit = rayHit;
