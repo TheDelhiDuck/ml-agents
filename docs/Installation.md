@@ -24,7 +24,7 @@ The ML-Agents Toolkit contains several components:
 
 Consequently, to install and use the ML-Agents Toolkit you will need to:
 
-- Install Unity (2022.3 or later)
+- Install Unity (2023.2 or later)
 - Install Python (3.10.12 or higher)
 - Clone this repository (Recommended for the latest version and bug fixes)
   - __Note:__ If you do not clone the repository, then you will not be
@@ -37,7 +37,7 @@ Consequently, to install and use the ML-Agents Toolkit you will need to:
 - Install the `mlagents-envs`
 - Install the `mlagents` Python package
 
-### Install **Unity 2022.3** or Later
+### Install **Unity 2023.2** or Later
 
 [Download](https://unity3d.com/get-unity/download) and install Unity. We
 strongly recommend that you install Unity through the Unity Hub as it will
@@ -146,16 +146,26 @@ offer a dedicated [guide on Virtual Environments](Using-Virtual-Environment.md).
 #### (Windows) Installing PyTorch
 
 On Windows, you'll have to install the PyTorch package separately prior to
-installing ML-Agents. Activate your virtual environment and run from the command line:
+installing ML-Agents in order to make sure the cuda-enabled version is used,
+rather than the CPU-only version. Activate your virtual environment and run from
+the command line:
 
 ```sh
-pip3 install torch~=1.13.1 -f https://download.pytorch.org/whl/torch_stable.html
+pip3 install torch~=2.2.1 --index-url https://download.pytorch.org/whl/cu121
 ```
 
 Note that on Windows, you may also need Microsoft's
 [Visual C++ Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
 if you don't have it already. See the [PyTorch installation guide](https://pytorch.org/get-started/locally/)
 for more installation options and versions.
+
+#### (OS X) Installing GRPC libraries
+
+On OS X, you may need to explicitly install the GRPC runtime libraries to avoid hitting errors when training like `dlopen(/Users/alex.mccarthy/miniconda3/envs/mlagents/lib/python3.10/site-packages/grpc/_cython/cygrpc.cpython-310-darwin.so, 0x0002): symbol not found in flat namespace '_CFRelease'`.
+
+```sh
+pip3 install grpcio
+```
 
 #### Installing `mlagents`
 

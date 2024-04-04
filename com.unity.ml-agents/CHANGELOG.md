@@ -9,7 +9,9 @@ and this project adheres to
 ## [Unreleased]
 ### Major Changes
 #### com.unity.ml-agents / com.unity.ml-agents.extensions (C#)
+- Upgraded to Sentis 1.3.0-pre.3 (#6070)
 - Upgraded to Sentis 1.3.0-exp.2 (#6013)
+- The minimum supported Unity version was updated to 2023.2. (#6071)
 
 #### ml-agents / ml-agents-envs
 - Upgraded to PyTorch 2.1.1. (#6013)
@@ -26,7 +28,9 @@ and this project adheres to
 - Fixed 3DBall sample package to remove Barracuda dependency. (#6030)
 
 #### ml-agents / ml-agents-envs
-- Bumped numpy version to >=1.21.2,<1.24.0 (#5997)
+- Bumped numpy version to >=1.23.5,<1.24.0 (#6082)
+- Bumped onnx version to 1.15.0 (#6062)
+- Bumped protobuf version to >=3.6,<21 (#6062)
 
 ## [3.0.0-exp.1] - 2023-10-09
 ### Major Changes
